@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'quizbrain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 QuizBrain quizBrain = QuizBrain();
+
 void main() => runApp(Quizzler());
 
 class Quizzler extends StatelessWidget {
@@ -29,8 +31,35 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   List<Widget> scoreKeeper = [];
 
+  void checkAnswer(bool userPickAnswer) {
+    bool correntAnswer = quizBrain.getCorrectAnswer() as bool;
+    setState(() {
+    if (userPickAnswer == correntAnswer ) {
+      scoreKeeper.add(Icon(Icons.check,color: Colors.green,));
+    } else {
+      scoreKeeper.add(Icon(Icons.close,color: Colors.red,));
+    }
+      quizBrain.nextQuestion();
+      isFinished();
+    });
+  }
+  void isFinished(){
+    int questionNum = quizBrain.getQuestionBank();
+    print(questionNum);
+    print(scoreKeeper.length);
+    if(scoreKeeper.length == questionNum){
+      Alert(context: context, title: "FINISHED", desc: "You've finished the quiz.").show();
+      reset();
+    }else{
+      print('next question!');
+    }
+  }
 
-
+  void reset(){
+    setState(() {
+      scoreKeeper = [];
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -68,20 +97,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 //The user picked true.
-                bool correntAnswer = quizBrain.getCorrectAnswer() as bool;
-
-                if (correntAnswer) {
-                  print('user got it right');
-                } else {
-                  print('user got it wrong');
-                }
-
-                setState(() {
-                  scoreKeeper.add(Icon(Icons.check, color: Colors.green));
-                  setState(() {
-                    quizBrain.nextQuestion();
-                  });
-                });
+                checkAnswer(true);
               },
             ),
           ),
@@ -99,18 +115,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  bool correntAnswer = quizBrain.getQuestionText() as bool;
-                  if (correntAnswer == false) {
-                    print('user got it right');
-                  } else {
-                    print('user got it wrong');
-                  }
-                  scoreKeeper.add(Icon(Icons.close, color: Colors.red));
-                  setState(() {
-                    quizBrain.nextQuestion();
-                  });
-                });
+                checkAnswer(false);
               },
             ),
           ),

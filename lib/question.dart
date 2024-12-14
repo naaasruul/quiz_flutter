@@ -4,12 +4,11 @@ class Question{
 
 //   THIS IS CONSTRUCTOR
 //     where all input will be
-  Question({String? q, bool? a}){
-    questionText = q;
-    questionAnswer = a;
-  }
-
+//   you can write like this.. or..
+//   Question({String? q, bool? a}){
+//     questionText = q;
+//     questionAnswer = a;
+//   }
+  Question(this.questionText, this.questionAnswer);
 
 }
-
-Question newQuestion = Question(q:'text',a:true);
